@@ -95,6 +95,7 @@ wp core install \
   --admin_user=$admin_user \
   --admin_password=$admin_password \
   --admin_email=$admin_email
+wp core verify-checksums
 
 
 echo Install plugins...

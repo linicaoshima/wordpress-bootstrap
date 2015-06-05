@@ -13,7 +13,7 @@ WordPress環境がディレクトリ内で完結するので、チームで実�
 $ mkdir yourSiteName
 $ cd yourSiteName
 $ curl -sL https://raw.githubusercontent.com/mgaoshima/wordpress-bootstrap/master/install.sh | sh
-$ wp server --path www   # http://localhost:8080
+$ wp server --path=www   # http://localhost:8080
 ```
 
 
@@ -30,7 +30,7 @@ $ git add . -A  # すべてのファイルをGit管理下に置くのがよい�
 
 ```
 $ ./install.sh
-$ wp server --path=www   # http://localhost:8080
+$ wp server --path=設定したドキュメントルートを指定    # 設定したホスト名で起動
 ```
 
 
@@ -45,6 +45,6 @@ $ wp server --path=www   # http://localhost:8080
 - Dynamic Hostnameプラグインは公式のものではなく、ポート番号付きのホスト名でも動くようにした[カスタマイズ版](https://github.com/mgaoshima/dynamic-hostname/tree/temp-use)を使用しています。
 
 
-## Licence
+## License
 
 MIT

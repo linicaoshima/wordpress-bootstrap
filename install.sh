@@ -36,11 +36,6 @@ admin_email=admin@admin.local
 set -e
 
 
-root=$(pwd)
-mkdir -p $dir/$wpdir
-cd $dir
-
-
 echo Check wp-cli...
 if type wp 2>/dev/null 1>/dev/null 
 then
@@ -56,109 +51,120 @@ else
 fi
 
 
+root=$(pwd)
+mkdir -p $dir/$wpdir
+cd $dir/$wpdir
+
+
 echo Download WordPress core...
-wp --path=$wpdir core download --locale=$locale
+wp core download --locale=$locale
 
 
 echo Setup SQLite...
 curl -o temp.zip https://downloads.wordpress.org/plugin/sqlite-integration.1.8.1.zip
 unzip temp.zip && rm temp.zip
-mv sqlite-integration $wpdir/wp-content/plugins/
-mkdir $wpdir/wp-content/database
-mv $wpdir/wp-content/plugins/sqlite-integration/db.php $wpdir/wp-content/
+mv sqlite-integration wp-content/plugins/
+mkdir wp-content/database
+mv wp-content/plugins/sqlite-integration/db.php wp-content/
 
 
 echo Install phpLiteAdmin...
 curl -o temp.zip https://phpliteadmin.googlecode.com/files/phpliteAdmin_v1-9-5.zip
-unzip temp.zip -d $wpdir/wp-content/database && rm temp.zip
+unzip temp.zip -d wp-content/database && rm temp.zip
 
 
 echo Generate wp-config.php...
-wp --path=$wpdir core config --skip-check \
-    --dbname=$dbname \
-    --dbuser=$dbuser \
-    --dbpass=$dbpass \
-    --dbprefix=$dbprefix \
-    --locale=$locale \
-    --extra-php <<PHP
+wp core config \
+  --skip-check \
+  --dbname=$dbname \
+  --dbuser=$dbuser \
+  --dbpass=$dbpass \
+  --dbprefix=$dbprefix \
+  --locale=$locale \
+  --extra-php <<PHP
 define('WP_HOME', 'http://$hostname');
 PHP
 
 
 echo Install dadabase...
-wp --path=$wpdir core install \
-    --url=http://$hostname \
-    --title="$title" \
-    --admin_user=$admin_user \
-    --admin_password=$admin_password \
-    --admin_email=$admin_email
+wp core install \
+  --url=http://$hostname \
+  --title="$title" \
+  --admin_user=$admin_user \
+  --admin_password=$admin_password \
+  --admin_email=$admin_email
 
 
 echo Install plugins...
-wp --path=$wpdir plugin install sqlite-integration
-wp --path=$wpdir plugin install dynamic-hostname --activate
-wp --path=$wpdir plugin install wp-multibyte-patch --activate
-wp --path=$wpdir plugin install advanced-custom-fields --activate
+wp plugin uninstall Akismet
+wp plugin uninstall hello
+wp plugin activate sqlite-integration
+wp plugin activate wp-multibyte-patch
+wp plugin install dynamic-hostname --activate
+wp plugin install advanced-custom-fields --activate
 
 
 echo Tweaks...
-db="$wpdir/wp-content/database/.ht.sqlite"
+db="wp-content/database/.ht.sqlite"
 sqlite3 $db "DELETE FROM \"wp_comments\""
 sqlite3 $db "DELETE FROM \"wp_postmeta\""
 sqlite3 $db "DELETE FROM \"wp_posts\""
 
 # キャッチフレーズ（ディスクリプション）
-wp --path=$wpdir option update blogdescription ""
+wp option update blogdescription ""
 
 # 日付のフォーマット
-wp --path=$wpdir option update time_format "H:i"
+wp option update time_format "H:i"
 
 # :-) や :-P のような顔文字を画像に変換して表示する
-wp --path=$wpdir option update use_smilies false
+wp option update use_smilies false
 
 # この投稿に含まれるすべてのリンクへの通知を試みる 
-wp --path=$wpdir option update default_pingback_flag false
+wp option update default_pingback_flag false
 
 # 他のブログからの通知 (ピンバック・トラックバック) を受け付ける
-wp --path=$wpdir option update default_ping_status false
+wp option update default_ping_status false
 
 # 新しい投稿へのコメントを許可する
-wp --path=$wpdir option update default_comment_status false
+wp option update default_comment_status false
 
 # パーマリンク設定
-wp --path=$wpdir option update permalink_structure "/%postname%/"
+wp option update permalink_structure "/%postname%/"
 
 # _sテーマのダウンロード
 if [ "$theme_name" != "" ] ; then
   curl -d underscoresme_generate=1 -d underscoresme_name=$theme_name \
       http://underscores.me/ > temp.zip
   unzip temp.zip && rm temp.zip
-  mv $theme_name $wpdir/wp-content/themes/
-  wp --path=$wpdir theme activate $theme_name
+  mv $theme_name wp-content/themes/
+  wp theme activate $theme_name
 fi
 
 
 echo dynamic-hostname Tweak...
-wp --path=$wpdir plugin deactivate dynamic-hostname
+wp plugin deactivate dynamic-hostname
 curl -O https://raw.githubusercontent.com/mgaoshima/dynamic-hostname/temp-use/dynamic-hostname.php
-mv dynamic-hostname.php $wpdir/wp-content/plugins/dynamic-hostname/
-wp --path=$wpdir plugin activate dynamic-hostname
-
-
-if [ "$wpdir" != "." ] ; then
-  echo Setting $wpdir as a siteurl...
-  wp --path=$wpdir option update siteurl "http://$hostname/$wpdir"
-  cat $wpdir/index.php | sed -e "s;/wp-blog-header.php;/$wpdir&;" > index.php
-fi
+mv dynamic-hostname.php wp-content/plugins/dynamic-hostname/
+wp plugin activate dynamic-hostname
 
 
 cd $root
 
 
+# WordPressをサブディレクトリにインストールする場合
+if [ "$wpdir" != "." ] ; then
+  echo Setting $wpdir as a siteurl...
+  wp option update siteurl "http://$hostname/$wpdir"
+  cat $dir/$wpdir/index.php | sed -e "s;/wp-blog-header.php;/$wpdir&;" > $dir/index.php
+fi
+
+
+# サーバー起動設定
 startscript="wp server"
 if [ "$dir" != "." ] ; then
   startscript="$startscript --path=$dir"
 fi
+
 
 echo done.
 echo - - - - - - - - - - - - - - - - - - - - 

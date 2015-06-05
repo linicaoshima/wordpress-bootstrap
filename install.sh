@@ -99,7 +99,7 @@ wp core verify-checksums
 
 
 echo Install plugins...
-wp plugin uninstall Akismet
+wp plugin uninstall akismet
 wp plugin uninstall hello
 wp plugin activate sqlite-integration
 wp plugin activate wp-multibyte-patch

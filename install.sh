@@ -139,11 +139,7 @@ wp option update permalink_structure "/%postname%/"
 # _sテーマのダウンロード
 if [ "$theme_name" != "" ] ; then
   echo Download _s as "$theme_name"...
-  curl -d underscoresme_generate=1 -d underscoresme_name=$theme_name \
-      http://underscores.me/ > temp.zip
-  unzip temp.zip && rm temp.zip
-  mv $theme_name wp-content/themes/
-  wp theme activate $theme_name
+  wp scaffold _s $theme_name --activate
 fi
 
 

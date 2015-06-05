@@ -1,0 +1,2 @@
+# wordpress-bootstrap
+WP-CLIとSQLiteを使用したWordPress環境のテンプレート

@@ -103,7 +103,8 @@ wp plugin uninstall akismet
 wp plugin uninstall hello
 wp plugin activate sqlite-integration
 wp plugin activate wp-multibyte-patch
-wp plugin install dynamic-hostname --activate
+#wp plugin install dynamic-hostname --activate
+wp plugin install https://github.com/mgaoshima/dynamic-hostname/archive/fix.zip --activate
 wp plugin install advanced-custom-fields --activate
 
 
@@ -141,13 +142,6 @@ if [ "$theme_name" != "" ] ; then
   echo Download _s as "$theme_name"...
   wp scaffold _s $theme_name --activate
 fi
-
-
-echo Replace modified Dynamic Hostname...
-wp plugin deactivate dynamic-hostname
-curl -O https://raw.githubusercontent.com/mgaoshima/dynamic-hostname/temp-use/dynamic-hostname.php
-mv dynamic-hostname.php wp-content/plugins/dynamic-hostname/
-wp plugin activate dynamic-hostname
 
 
 cd $root

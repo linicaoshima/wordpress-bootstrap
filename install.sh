@@ -1,5 +1,6 @@
 #!/bin/sh
 
+
 ############################################
  
 # ドキュメントルート（カレントディレクトリの場合は「.」）
@@ -32,6 +33,7 @@ admin_password=admin
 admin_email=admin@admin.local
  
 ############################################
+
 
 set -e
 
@@ -104,12 +106,14 @@ wp plugin install dynamic-hostname --activate
 wp plugin install advanced-custom-fields --activate
 
 
-echo Tweaks...
+echo Delete default posts/comments/postmeta...
 db="wp-content/database/.ht.sqlite"
 sqlite3 $db "DELETE FROM \"wp_comments\""
 sqlite3 $db "DELETE FROM \"wp_postmeta\""
 sqlite3 $db "DELETE FROM \"wp_posts\""
 
+
+echo Tweaks...
 # キャッチフレーズ（ディスクリプション）
 wp option update blogdescription ""
 
@@ -133,6 +137,7 @@ wp option update permalink_structure "/%postname%/"
 
 # _sテーマのダウンロード
 if [ "$theme_name" != "" ] ; then
+  echo Download _s as "$theme_name"...
   curl -d underscoresme_generate=1 -d underscoresme_name=$theme_name \
       http://underscores.me/ > temp.zip
   unzip temp.zip && rm temp.zip
@@ -141,7 +146,7 @@ if [ "$theme_name" != "" ] ; then
 fi
 
 
-echo dynamic-hostname Tweak...
+echo Replace modified Dynamic Hostname...
 wp plugin deactivate dynamic-hostname
 curl -O https://raw.githubusercontent.com/mgaoshima/dynamic-hostname/temp-use/dynamic-hostname.php
 mv dynamic-hostname.php wp-content/plugins/dynamic-hostname/

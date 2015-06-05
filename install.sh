@@ -22,6 +22,9 @@ dbprefix=wp_
  
 # サイトタイトル
 title="New WordPress Site"
+
+# テーマ名（$theme_nameで http://underscores.me/ から生成してくる）
+theme_name=
  
 # 管理者アカウント
 admin_user=admin
@@ -99,9 +102,40 @@ wp --path=$wpdir plugin install advanced-custom-fields --activate
 
 
 echo Tweaks...
-# TODO: 初期設定をいじる
-# TODO: 最初のpostを消したりする
-# TODO: 最初のpostを消したりする
+db="$wpdir/wp-content/database/.ht.sqlite"
+sqlite3 $db "DELETE FROM \"wp_comments\""
+sqlite3 $db "DELETE FROM \"wp_postmeta\""
+sqlite3 $db "DELETE FROM \"wp_posts\""
+
+# キャッチフレーズ（ディスクリプション）
+wp --path=$wpdir option update blogdescription ""
+
+# 日付のフォーマット
+wp --path=$wpdir option update time_format "H:i"
+
+# :-) や :-P のような顔文字を画像に変換して表示する
+wp --path=$wpdir option update use_smilies false
+
+# この投稿に含まれるすべてのリンクへの通知を試みる 
+wp --path=$wpdir option update default_pingback_flag false
+
+# 他のブログからの通知 (ピンバック・トラックバック) を受け付ける
+wp --path=$wpdir option update default_ping_status false
+
+# 新しい投稿へのコメントを許可する
+wp --path=$wpdir option update default_comment_status false
+
+# パーマリンク設定
+wp --path=$wpdir option update permalink_structure "/%postname%/"
+
+# _sテーマのダウンロード
+if [ "$theme_name" != "" ] ; then
+  curl -d underscoresme_generate=1 -d underscoresme_name=$theme_name \
+      http://underscores.me/ > temp.zip
+  unzip temp.zip && rm temp.zip
+  mv $theme_name $wpdir/wp-content/themes/
+  wp --path=$wpdir theme activate $theme_name
+fi
 
 
 echo dynamic-hostname Tweak...

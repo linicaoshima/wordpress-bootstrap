@@ -82,10 +82,7 @@ wp core config \
   --dbuser=$dbuser \
   --dbpass=$dbpass \
   --dbprefix=$dbprefix \
-  --locale=$locale \
-  --extra-php <<PHP
-define('WP_HOME', 'http://$hostname');
-PHP
+  --locale=$locale
 
 
 echo Install dadabase...
@@ -103,8 +100,7 @@ wp plugin uninstall akismet
 wp plugin uninstall hello
 wp plugin activate sqlite-integration
 wp plugin activate wp-multibyte-patch
-#wp plugin install dynamic-hostname --activate
-wp plugin install https://github.com/mgaoshima/dynamic-hostname/archive/fix.zip --activate
+wp plugin install https://github.com/mgaoshima/no-absolute-path/archive/master.zip --activate
 wp plugin install advanced-custom-fields --activate
 
 

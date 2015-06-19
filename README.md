@@ -41,8 +41,8 @@ $ wp server --path=設定したドキュメントルートを指定    # 設定�
 - データベースとして[SQLite Integration](http://dogwood.skr.jp/wordpress/sqlite-integration-ja/)経由でSQLiteを使用しているので、たまに動かないプラグインがあります。
 - `www/wp-content/database/.ht.sqlite` がDBファイルです。そのままデプロイできると思いますが、ブラウザから直接アクセスされないようにする必要があります。
 - `http://localhost:8080/wp-content/database/phpliteadmin.php` から[phpLiteAdmin](https://code.google.com/p/phpliteadmin/)に入れます。
-- ホスト名は[Dynamic Hostname](https://wordpress.org/plugins/dynamic-hostname/)プラグインにより自動で書き換えられるので、任意で構いませんが、DBに登録される内容は`http://wordpress.local`です。
-- Dynamic Hostnameプラグインは公式のものではなく、ポート番号付きのホスト名でも動くようにした[カスタマイズ版](https://github.com/mgaoshima/dynamic-hostname/tree/temp-use)を使用しています。
+- Dynamic Hostnameの代わりにNo Absolute Pathプラグインを使用し、DBに絶対パスが混入しないようにしました。
+- PHPのビルトインサーバなので、一部機能が動かない場合があります（画像の編集機能など）
 
 
 ## License

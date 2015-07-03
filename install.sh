@@ -151,6 +151,12 @@ if [ "$wpdir" != "." ] ; then
 fi
 
 
+# SQLiteの差分をテキストで表示 - https://goo.gl/LeK6cK
+echo '!*.sqlite' >> .gitignore
+echo '*.sqlite diff=sqlite3' >> .gitattributes
+git config diff.sqlite3.textconv 'echo .dump|sqlite3'
+
+
 # サーバー起動設定
 startscript="wp server"
 if [ "$dir" != "." ] ; then

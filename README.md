@@ -43,6 +43,7 @@ $ wp server --path=設定したドキュメントルートを指定    # 設定�
 - `http://localhost:8080/wp-content/database/phpliteadmin.php` から[phpLiteAdmin](https://code.google.com/p/phpliteadmin/)に入れます。
 - Dynamic Hostnameの代わりにNo Absolute Pathプラグインを使用し、DBに絶対パスが混入しないようにしました。
 - PHPのビルトインサーバなので、一部機能が動かない場合があります（画像の編集機能など）
+- `.gitignore`と`.gitattributes`が生成されます。すでにある場合は上書きされてしまうので気をつけて下さい。
 
 
 ## License

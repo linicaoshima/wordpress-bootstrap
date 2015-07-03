@@ -145,8 +145,8 @@ cd $root
 
 # WordPressをサブディレクトリにインストールする場合
 if [ "$wpdir" != "." ] ; then
-  echo Setting $wpdir as a siteurl...
-  wp option update siteurl "http://$hostname/$wpdir"
+  echo Setting "$wpdir" as a siteurl...
+  wp --path=$dir/$wpdir option update siteurl "http://$hostname/$wpdir"
   cat $dir/$wpdir/index.php | sed -e "s;/wp-blog-header.php;/$wpdir&;" > $dir/index.php
 fi
 

@@ -43,13 +43,8 @@ if type wp 2>/dev/null 1>/dev/null
 then
   echo wp-cli exists
 else
-  curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
-  chmod +x wp-cli.phar
-  sudo mv wp-cli.phar /usr/local/bin/wp
-  mkdir -p ~/.wp-cli/commands
-  git clone https://github.com/wp-cli/server-command.git ~/.wp-cli/commands/server
-  echo "require:" >> ~/.wp-cli/config.yml
-  echo "  - commands/server/command.php" >> ~/.wp-cli/config.yml
+  echo Please install wp-cli
+  echo run `brew install wp-cli`
 fi
 
 
@@ -149,10 +144,10 @@ if [ "$wpdir" != "." ] ; then
 fi
 
 
-# SQLiteの差分をテキストで表示 - https://goo.gl/LeK6cK
-echo '!*.sqlite' >> .gitignore
-echo '*.sqlite diff=sqlite3' >> .gitattributes
-git config diff.sqlite3.textconv 'echo .dump|sqlite3'
+# # SQLiteの差分をテキストで表示 - https://goo.gl/LeK6cK
+# echo '!*.sqlite' >> .gitignore
+# echo '*.sqlite diff=sqlite3' >> .gitattributes
+# git config diff.sqlite3.textconv 'echo .dump|sqlite3'
 
 
 # サーバー起動設定

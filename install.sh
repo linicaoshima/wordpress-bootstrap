@@ -100,8 +100,6 @@ wp plugin uninstall akismet
 wp plugin uninstall hello
 wp plugin activate sqlite-integration
 wp plugin activate wp-multibyte-patch
-wp plugin install https://github.com/mgaoshima/no-absolute-path/archive/master.zip --activate
-wp plugin install advanced-custom-fields --activate
 
 
 echo Delete default posts/comments/postmeta...

@@ -79,10 +79,12 @@ wp core config \
   --dbprefix=$dbprefix \
   --locale=$locale \
   --extra-php <<PHP
-\$hostname = \$_SERVER['HTTP_HOST'];
-if ( \$hostname == 'localhost:8080' ) {
-  define('WP_DEBUG', true);
-  define('SAVEQUERIES', true);
+if ( isset(\$_SERVER['HTTP_HOST']) ) {
+  \$hostname = \$_SERVER['HTTP_HOST'];
+  if ( \$hostname == 'localhost:8080' ) {
+    define('WP_DEBUG', true);
+    define('SAVEQUERIES', true);
+  }
 }
 PHP
 
@@ -97,10 +99,15 @@ wp core verify-checksums
 
 
 echo Install plugins...
-wp plugin uninstall akismet
-wp plugin uninstall hello
 wp plugin activate sqlite-integration
 wp plugin activate wp-multibyte-patch
+wp plugin install --activate debug-bar
+wp plugin install --activate wordpress-importer
+wp plugin install advanced-custom-fields
+wp plugin install tinymce-advanced
+wp plugin install wp-pagenavi
+wp plugin install simple-page-ordering
+wp plugin install taxonomy-terms-order
 
 
 echo Delete default posts/comments/postmeta...
@@ -139,19 +146,24 @@ if [ "$theme_name" != "" ] ; then
 fi
 
 
+wp core update
+wp plugin update --all
+
 cat << PHP >> wp-config.php
 
 
-# Update home/siteurl
-switch ( \$hostname ) {
-  case 'localhost:8080':
-    update_option('home', 'http://localhost:8080');
-    update_option('siteurl', 'http://localhost:8080');
-    break;
-  default:
-    update_option('home', 'http://$hostname');
-    update_option('siteurl', 'http://$hostname');
-    break;
+// Update home/siteurl
+if ( function_exists( 'update_option') ) {
+  switch ( \$hostname ) {
+    case 'localhost:8080':
+      update_option('home', 'http://localhost:8080');
+      update_option('siteurl', 'http://localhost:8080');
+      break;
+    default:
+      update_option('home', 'http://$hostname');
+      update_option('siteurl', 'http://$hostname');
+      break;
+  }
 }
 PHP
 

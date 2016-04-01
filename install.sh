@@ -2,36 +2,36 @@
 
 
 ############################################
- 
+
 # ドキュメントルート（カレントディレクトリの場合は「.」）
 dir=www
- 
+
 # WordPressコアファイルの場所（$dirと同じ場合は「.」）
 wpdir=.
- 
+
 # WordPressのロケール
 locale=ja
- 
+
 # ホスト名
 hostname=wordpress.local
- 
+
 # データベース
 dbname=wordpress
 dbuser=root
 dbpass=root
 dbprefix=wp_
- 
+
 # サイトタイトル
 title="New WordPress Site"
 
 # テーマ名（$theme_nameで http://underscores.me/ から生成してくる）
 theme_name=
- 
+
 # 管理者アカウント
 admin_user=admin
 admin_password=admin
 admin_email=admin@admin.local
- 
+
 ############################################
 
 
@@ -39,7 +39,7 @@ set -e
 
 
 echo Check wp-cli...
-if type wp 2>/dev/null 1>/dev/null 
+if type wp 2>/dev/null 1>/dev/null
 then
   echo wp-cli exists
 else
@@ -77,8 +77,14 @@ wp core config \
   --dbuser=$dbuser \
   --dbpass=$dbpass \
   --dbprefix=$dbprefix \
-  --locale=$locale
-
+  --locale=$locale \
+  --extra-php <<PHP
+\$hostname = \$_SERVER['HTTP_HOST'];
+if ( \$hostname == 'localhost:8080' ) {
+  define('WP_DEBUG', true);
+  define('SAVEQUERIES', true);
+}
+PHP
 
 echo Install dadabase...
 wp core install \
@@ -114,7 +120,7 @@ wp option update time_format "H:i"
 # :-) や :-P のような顔文字を画像に変換して表示する
 wp option update use_smilies false
 
-# この投稿に含まれるすべてのリンクへの通知を試みる 
+# この投稿に含まれるすべてのリンクへの通知を試みる
 wp option update default_pingback_flag false
 
 # 他のブログからの通知 (ピンバック・トラックバック) を受け付ける
@@ -131,6 +137,23 @@ if [ "$theme_name" != "" ] ; then
   echo Download _s as "$theme_name"...
   wp scaffold _s $theme_name --activate
 fi
+
+
+cat << PHP >> wp-config.php
+
+
+# Update home/siteurl
+switch ( \$hostname ) {
+  case 'localhost:8080':
+    update_option('home', 'http://localhost:8080');
+    update_option('siteurl', 'http://localhost:8080');
+    break;
+  default:
+    update_option('home', 'http://$hostname');
+    update_option('siteurl', 'http://$hostname');
+    break;
+}
+PHP
 
 
 cd $root
@@ -158,7 +181,7 @@ fi
 
 
 echo done.
-echo - - - - - - - - - - - - - - - - - - - - 
+echo - - - - - - - - - - - - - - - - - - - -
 echo
 echo Start server with:
 echo $ $startscript

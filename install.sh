@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 
 ############################################
@@ -46,6 +46,31 @@ else
   echo Please install wp-cli
   echo run `brew install wp-cli`
 fi
+
+
+echo -n "docroot ($dir): "
+read input
+dir=${input:-$dir}
+
+echo -n "wpdir ($dir): "
+read input
+wpdir=${input:-$wpdir}
+
+echo -n "locale ($locale): "
+read input
+locale=${input:-$locale}
+
+echo -n "dbname ($dbname): "
+read input
+dbname=${input:-$dbname}
+
+echo -n "title ($title): "
+read input
+title=${input:-$title}
+
+echo -n "theme ($theme): "
+read input
+theme=${input:-$theme}
 
 
 root=$(pwd)

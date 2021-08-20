@@ -83,17 +83,16 @@ wp core download --locale=$locale
 
 
 echo Setup SQLite...
-curl -o temp.zip https://downloads.wordpress.org/plugin/sqlite-integration.1.8.1.zip
-unzip temp.zip && rm temp.zip
-mv sqlite-integration wp-content/plugins/
-mkdir wp-content/database
-mv wp-content/plugins/sqlite-integration/db.php wp-content/
+curl -o db.php https://raw.githubusercontent.com/aaemnnosttv/wp-sqlite-db/master/src/db.php
+mv db.php wp-content/db.php
 
 
 echo Install phpLiteAdmin...
-curl -o temp.zip https://phpliteadmin.googlecode.com/files/phpliteAdmin_v1-9-5.zip
-unzip temp.zip -d wp-content/database && rm temp.zip
-
+curl -L -o temp.zip https://bitbucket.org/phpliteadmin/public/downloads/phpLiteAdmin_v1-9-8-2.zip
+unzip temp.zip -d temp && rm temp.zip
+mkdir wp-content/database
+mv temp/phpliteadmin.php wp-content/database
+rm -rf temp
 
 echo Generate wp-config.php...
 wp core config \
@@ -124,15 +123,12 @@ wp core verify-checksums
 
 
 echo Install plugins...
-wp plugin activate sqlite-integration
-wp plugin activate wp-multibyte-patch
+wp plugin install --activate wp-multibyte-patch
 wp plugin install --activate debug-bar
 wp plugin install --activate wordpress-importer
-wp plugin install advanced-custom-fields
-wp plugin install tinymce-advanced
-wp plugin install wp-pagenavi
-wp plugin install simple-page-ordering
-wp plugin install taxonomy-terms-order
+#wp plugin install advanced-custom-fields
+#wp plugin install simple-page-ordering
+#wp plugin install taxonomy-terms-order
 
 
 echo Delete default posts/comments/postmeta...

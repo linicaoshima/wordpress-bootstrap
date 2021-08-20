@@ -12,7 +12,7 @@ WordPress環境がディレクトリ内で完結するので、チームで実�
 ```
 $ mkdir yourSiteName
 $ cd yourSiteName
-$ curl -sL https://raw.githubusercontent.com/mgaoshima/wordpress-bootstrap/master/install.sh | sh
+$ curl -sL https://raw.githubusercontent.com/linicaoshima/wordpress-bootstrap/master/install.sh | sh
 $ wp server --path=www   # http://localhost:8080
 ```
 
@@ -22,7 +22,7 @@ $ wp server --path=www   # http://localhost:8080
 ```
 $ mkdir yourSiteName
 $ cd yourSiteName
-$ curl -O https://raw.githubusercontent.com/mgaoshima/wordpress-bootstrap/master/install.sh
+$ curl -O https://raw.githubusercontent.com/linicaoshima/wordpress-bootstrap/master/install.sh
 ```
 
 `install.sh` の冒頭に設定があるので、適宜修正して下さい。
@@ -38,7 +38,7 @@ $ wp server --path=設定したドキュメントルートを指定    # 設定�
 
 - デフォルトのWordPressアカウントは`admin`、パスワードも`admin`です。
 - `wp-cli`がインストールされていない場合は自動でインストールされるので注意して下さい（suパスワード要求あり）
-- データベースとして[SQLite Integration](http://dogwood.skr.jp/wordpress/sqlite-integration-ja/)経由でSQLiteを使用しているので、たまに動かないプラグインがあります。
+- SQLite Integrationをベースに開発された[wp-sqlite-db](https://github.com/aaemnnosttv/wp-sqlite-db)でSQLiteを使用しているので、たまに動かないプラグインがあります。
 - `www/wp-content/database/.ht.sqlite` がDBファイルです。そのままデプロイできると思いますが、ブラウザから直接アクセスされないようにする必要があります。
 - `http://localhost:8080/wp-content/database/phpliteadmin.php` から[phpLiteAdmin](https://code.google.com/p/phpliteadmin/)に入れます。
 - PHPのビルトインサーバなので、一部機能が動かない場合があります（画像の編集機能など）
